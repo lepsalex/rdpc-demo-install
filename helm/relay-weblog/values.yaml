@@ -1,4 +1,4 @@
-# Nextflow event log reciever (relay step 1)
+# Nextflow event log reciever (relay step 1) (https://github.com/icgc-argo/workflow-relay)
 
 # helm install relay-weblog icgcargo/workflow-relay -f relay-weblog/values.yaml
 

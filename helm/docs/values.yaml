@@ -1,4 +1,4 @@
-# Generates a unified swagger-docs of management and search (WES), served through gateway at /api-docs
+# Generates a unified swagger-docs of management and search (WES), served through gateway at /api-docs (https://github.com/icgc-argo/workflow-docs/)
 
 # helm install docs icgcargo/workflow-docs -f docs/values.yaml
 

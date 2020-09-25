@@ -1,4 +1,4 @@
-# Event converter + indexer to elastic search (relay step 3)
+# Event converter + indexer to elastic search (relay step 3) (https://github.com/icgc-argo/workflow-relay)
 
 # helm install relay-index icgcargo/workflow-relay -f relay-index/values.yaml
 

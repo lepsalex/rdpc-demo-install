@@ -1,4 +1,4 @@
-# search view on elastic indexes (REST + GraphQL)
+# search view on elastic indexes (REST + GraphQL) (https://github.com/icgc-argo/workflow-search)
 
 # helm install search icgcargo/workflow-search -f search/values.yaml
 

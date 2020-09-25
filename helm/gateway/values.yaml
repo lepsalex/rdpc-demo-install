@@ -1,4 +1,4 @@
-# Simple NGINX proxy_pass service that unifies management, docs, and search under one API
+# Simple NGINX proxy_pass service that unifies management, docs, and search under one API (https://github.com/icgc-argo/workflow-gateway/)
 
 # helm install gateway icgcargo/workflow-gateway -f gateway/values.yaml
 

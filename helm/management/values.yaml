@@ -1,4 +1,4 @@
-# Nextflow CLI Interface (REST + GraphQL)
+# Nextflow CLI Interface (REST + GraphQL) (https://github.com/icgc-argo/workflow-management)
 
 # helm install management icgcargo/workflow-management -f management/values.yaml
 

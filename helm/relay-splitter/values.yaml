@@ -1,4 +1,4 @@
-# Event splitter (workflow, task, failed) (relay step 2)
+# Event splitter (workflow, task, failed) (relay step 2) (https://github.com/icgc-argo/workflow-relay)
 
 # helm install relay-splitter icgcargo/workflow-relay -f relay-splitter/values.yaml
 
