@@ -1,0 +1,29 @@
+# Nextflow CLI Interface (REST + GraphQL)
+
+# helm install management icgcargo/workflow-management -f management/values.yaml
+
+image:
+  tag: 2.8.0
+  pullPolicy: IfNotPresent
+
+nameOverride: "management"
+fullnameOverride: "management"
+
+appConfig:
+  nextflow_k8s_runAsUser: 9999
+  nextflow_k8s_namespace: "_K8S_NAMESPACE_"
+  nextflow_k8s_serviceAccount: "workflow-management" # if applicable
+  nextflow_k8s_volmounts:
+    - "vol-claim:/mount/path" # the -v option in the CLI (https://www.nextflow.io/docs/latest/kubernetes.html#execution) ... must be RWX (read-write-many) - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+  nextflow_k8s_masterUrl: "https://kubernetes.default.svc.cluster.local"
+  nextflow_k8s_trust_certificate: true 
+  nextflow_weblog_url: "http://relay-weblog/"
+  spring_profiles_active: "apiKey" # optional if you want song/score apiKeys mounted from kube automatically
+  secret_apikey_ref:
+    name: "management-apikey"
+    key: "apiKeyBase64"
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999

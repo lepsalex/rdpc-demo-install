@@ -1,0 +1,21 @@
+# Generates a unified swagger-docs of management and search (WES), served through gateway at /api-docs
+
+# helm install docs icgcargo/workflow-docs -f docs/values.yaml
+
+image:
+  tag: 1.1.0
+  pullPolicy: IfNotPresent
+
+nameOverride: "docs"
+fullnameOverride: "docs"
+
+appConfig:
+  port: 3000
+  host: "_RDPC_URL_"
+  wf_search_api: "http://search/v2/api-docs"
+  wf_management_api: "http://management/v2/api-docs"
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999

@@ -1,0 +1,9 @@
+# will get mounted as secret in nextflow pods by management auto-magically
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: management-apikey
+type: Opaque
+data:
+  apiKeyBase64: ###doublebase64 encoded key###

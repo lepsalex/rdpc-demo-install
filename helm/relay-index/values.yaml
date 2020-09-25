@@ -1,0 +1,38 @@
+# Event converter + indexer to elastic search (relay step 3)
+
+# helm install relay-index icgcargo/workflow-relay -f relay-index/values.yaml
+
+replicaCount: 5 # optional, can be just 1
+
+image:
+  tag: 2.3.0
+  pullPolicy: IfNotPresent
+
+nameOverride: "relay-index"
+fullnameOverride: "relay-index"
+
+appConfig:
+  SPRING_PROFILES_ACTIVE: "index"
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka-headless:9092"
+  ELASTIC_HOST: "_ELASTIC_SEARCH_URL_"
+  ELASTIC_PORT: 443
+  ELASTIC_USEHTTPS: true
+  ELASTIC_USEAUTHENTICATION: true
+  ELASTIC_USERNAME: elastic
+  ELASTIC_SECRET:
+    name: workflow-es-elastic-user
+    key: elastic
+  ELASTIC_WORKFLOWINDEX: workflow
+  ELASTIC_TASKINDEX: task
+  ELASTIC_NUMBEROFSHARDS: 6
+  ELASTIC_NUMBEROFREPLICAS: 2
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999
+
+env:
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOADDPARTITIONS: true
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_REPLICATIONFACTOR: 3
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_MINPARTITIONCOUNT: 5

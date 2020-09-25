@@ -1,0 +1,50 @@
+# helm install workflow-es icgcargo/es-operator -f elastic-search/values.yaml
+
+elastic:
+  name: workflow
+  version: 7.6.0
+  http:
+    # this tls is for the service not the ingress to encrypt internal traffic
+    tls:
+      issuer: selfsigned-issuer  # this needs to be pre created in the cluster
+  nodes:
+    master:
+      name: master 
+      env: 
+        ES_JAVA_OPTS: -Xmx512m -Xms512m
+      count: 3
+      storage: 2Gi
+      resources:
+        requests:
+          memory: 4Gi
+          cpu: 2
+        limits:
+          memory: 4Gi
+          cpu: 2
+    data: 
+      name: data
+      count: 3
+      env: 
+        ES_JAVA_OPTS: -Xmx512m -Xms512m
+      storage: 5Gi
+      resources:
+        requests:
+          memory: 4Gi
+          cpu: 2
+        limits:
+          memory: 4Gi
+          cpu: 2
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-a
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/proxy-body-size: 256m
+  hosts:
+    - host: _ELASTIC_SEARCH_URL_
+      paths: [/]
+  tls:
+    - secretName: workflow-es-cert
+      hosts:
+        - _ELASTIC_SEARCH_URL_

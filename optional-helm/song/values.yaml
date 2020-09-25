@@ -1,0 +1,78 @@
+# helm install song overture-stack/song -f values.yaml
+
+### REQUIRES POSTGRES ###
+
+image:
+  tag: 4.3.0
+backupImage:
+  tag: 1.1.0
+appConfig:
+  profiles: "kafka,prod,secure,default"
+  id:
+    useLocal: false
+    federated:
+      uriTemplate:
+        donor: https://_CLINICAL_SERVER_URL_/clinical/donors/id?programId={studyId}&submitterId={submitterId}
+        specimen: https://_CLINICAL_SERVER_URL_/clinical/specimens/id?programId={studyId}&submitterId={submitterId}
+        sample: https://_CLINICAL_SERVER_URL_/clinical/samples/id?programId={studyId}&submitterId={submitterId}
+  flyway:
+    enabled: true
+    locations: classpath:flyway/sql,classpath:db/migration
+  auth:
+    server:
+      url: https://_EGO_URL_/api/o/check_api_key
+      tokenName: apiKey
+      clientID: song-rdpc-collab
+      scope:
+        study:
+          prefix: "PROGRAMDATA-"
+          suffix: ".WRITE"
+        system: "song.WRITE"
+    jwt:
+      enable: true
+      publicKeyUrl: https://_EGO_URL_/api/oauth/token/public_key
+  score:
+    url: https://_SCORE_URL_
+
+extraEnv:
+  LOGGING_LEVEL_ROOT: INFO
+  SONG_ID: song._THIS_SONG_ID_
+  SPRING_KAFKA_BOOTSTRAPSERVERS: "kafka-headless:9092"
+  SPRING_KAFKA_TEMPLATE_DEFAULTTOPIC: song_analysis
+
+deployment:
+  livenessProbe:
+    periodSeconds: 30
+  readinessProbe:
+    periodSeconds: 30
+
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-a
+  enabled: true
+  hosts:
+  - _SONG_URL_
+  tls:
+  - hosts:
+    - _SONG_URL_
+    secretName: _SONG_SECRET_NAME_
+
+postgres:
+  postgresDb: song
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999
+
+# Refer to link for schedule syntax
+# https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm
+backup:
+  enabled: true
+  schedule: "0 0 5 * * ?"
+  prefix: backup
+  autoCreateBucket: true
+  s3:
+    bucketName:  postgres-backups
+    bucketPath:  _BUCKET_PATH_
+    endpointUrl: "https://_OBJECT_STORAGE_URL_"

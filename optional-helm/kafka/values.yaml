@@ -1,0 +1,77 @@
+# helm install kafka bitnami/kafka -f kafka/values.yaml
+
+## Kafka's Java Heap size.
+heapOpts: -Xms512M -Xmx512M
+
+# Replication
+replicaCount: 3
+defaultReplicationFactor: 3
+offsetsTopicReplicationFactor: 3
+## The replication factor for the transaction topic
+transactionStateLogReplicationFactor: 3
+## Overridden min.insync.replicas config for the transaction topic
+transactionStateLogMinIsr: 3
+
+serviceAccount:
+  create: true
+
+persistence:
+    enabled: true
+    size: 5Gi
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 2
+    memory: 2Gi
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+            - kafka
+        topologyKey: kubernetes.io/hostname
+      weight: 1
+
+## ------------------------------------------------------
+## Zookeeper
+## ------------------------------------------------------
+zookeeper:
+  replicaCount: 3
+
+  heapSize: 512
+
+  serviceAccount:
+    create: true
+
+  persistence:
+    enabled: true
+    size: 3Gi
+
+  resources:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 2
+      memory: 2Gi
+
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - zookeeper
+          topologyKey: kubernetes.io/hostname
+        weight: 1

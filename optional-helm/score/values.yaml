@@ -1,0 +1,68 @@
+# helm install score overture-stack/score -f values.yaml
+
+image:
+  tag: 5.1.0
+appConfig:
+  springProfiles: amazon,collaboratory,prod,secure
+  authServer:
+    url: https://_EGO_URL_/api/o/check_api_key
+    tokenName: apiKey
+    clientId: score-rdpc-collab
+    scope:
+      download:
+        system: score.READ
+        study:
+          prefix: PROGRAMDATA-
+          suffix: .READ
+      upload:
+        system: score.WRITE
+        study:
+          prefix: PROGRAMDATA-
+          suffix: .WRITE
+    jwt:
+      enable: true
+      publicKeyUrl: https://_EGO_URL_/api/oauth/token/public_key
+  song:
+    serverUrl: https://_SONG_URL_
+  objectStorage:
+    url: https://_OBJECT_STORAGE_URL_
+  storageServer:
+    connectionTimeout: "1200000"
+    dataBucket: _BUCKET_NAME_
+    dataDir: data
+    partSize: "1073741824"
+    port: "8080"
+    sentinel: heliograph
+    stateBucket: _BUCKET_NAME_.state
+extraEnv:
+  LOGGING_LEVEL_BIO_OVERTURE_SCORE_SERVER: DEBUG
+  LOGGING_LEVEL_BIO_OVERTURE_SCORE_SERVER_REPOSITORY_S3: TRACE
+  METADATA_USELEGACYMODE: "false"
+  S3_SIGV4ENABLED: "true"
+  UPLOAD_PARTSIZE: "1073741824"
+  SERVER_COMPRESSION_ENABLED: "true"
+  SERVER_COMPRESSION_MIMETYPES: "application/json"
+  UPLOAD_CONNECTION_TIMEOUT: "1200000"
+
+deployment:
+  livenessProbe:
+    periodSeconds: 30
+  readinessProbe:
+    periodSeconds: 30
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999
+
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-a
+  enabled: true
+  hosts:
+  - _SCORE_URL_
+  tls:
+  - hosts:
+    - _SCORE_URL_
+    secretName: _BUCKET_NAME_-cert
+

@@ -1,0 +1,27 @@
+# Event splitter (workflow, task, failed) (relay step 2)
+
+# helm install relay-splitter icgcargo/workflow-relay -f relay-splitter/values.yaml
+
+replicaCount: 5 # optional, can be just 1
+
+image:
+  tag: 2.3.0
+  pullPolicy: IfNotPresent
+
+nameOverride: "relay-splitter"
+fullnameOverride: "relay-splitter"
+
+appConfig:
+  SPRING_PROFILES_ACTIVE: "splitter"
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka-headless:9092"
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999
+
+env:
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOADDPARTITIONS: true
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_REPLICATIONFACTOR: 3
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_MINPARTITIONCOUNT: 5
+  MANAGEMENT_HEALTH_ELASTICSEARCH_ENABLED: "false"

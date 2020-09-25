@@ -1,0 +1,35 @@
+# Nextflow event log reciever (relay step 1)
+
+# helm install relay-weblog icgcargo/workflow-relay -f relay-weblog/values.yaml
+
+replicaCount: 2 # optional, can be just 1
+
+image:
+  tag: 2.3.0
+  pullPolicy: IfNotPresent
+
+nameOverride: "relay-weblog"
+fullnameOverride: "relay-weblog"
+
+appConfig:
+  SPRING_PROFILES_ACTIVE: "weblog"
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka-headless:9092"
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999
+
+env:
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOADDPARTITIONS: true
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_REPLICATIONFACTOR: 3
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_MINPARTITIONCOUNT: 5
+  MANAGEMENT_HEALTH_ELASTICSEARCH_ENABLED: "false"
+  # nextflow event sanitization (in case you want to pass in tokens in workflow params)
+  SANITIZE_PATHS_0: "metadata.parameters.api_token"
+  SANITIZE_PATHS_1: "metadata.parameters.download.song_api_token"
+  SANITIZE_PATHS_2: "metadata.parameters.download.score_api_token"
+  SANITIZE_PATHS_3: "metadata.parameters.upload.song_api_token"
+  SANITIZE_PATHS_4: "metadata.parameters.upload.score_api_token"
+  SANITIZE_PATHS_5: "metadata.parameters.download.api_token"
+  SANITIZE_PATHS_6: "metadata.parameters.upload.api_token"

@@ -1,0 +1,33 @@
+# Simple NGINX proxy_pass service that unifies management, docs, and search under one API
+
+# helm install gateway icgcargo/workflow-gateway -f gateway/values.yaml
+
+image:
+  tag: 1.2.0
+  pullPolicy: IfNotPresent
+  
+nameOverride: "gateway"
+fullnameOverride: "gateway"
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-a
+  hosts:
+    - host: _RDPC_URL_
+      paths: [/]
+  tls:
+    - hosts:
+      - _RDPC_URL_
+      secretName: rdpc-cert
+
+appConfig:
+  WF_MANAGEMENT_HOST: "management"
+  WF_SEARCH_HOST: "search"
+  WF_UI_HOST: "ui"
+  WF_DOCS_HOST: "docs"

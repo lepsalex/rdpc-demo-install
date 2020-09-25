@@ -1,0 +1,40 @@
+# search view on elastic indexes (REST + GraphQL)
+
+# helm install search icgcargo/workflow-search -f search/values.yaml
+
+image:
+  tag: 2.3.0
+  pullPolicy: IfNotPresent
+
+nameOverride: "search"
+fullnameOverride: "search"
+
+podSecurityContext:
+  runAsGroup: 9999
+  runAsNonRoot: true
+  runAsUser: 9999
+
+appConfig:
+  ELASTIC_HOST: "_ELASTIC_SEARCH_URL_"
+  ELASTIC_PORT: 443
+  ELASTIC_USEHTTPS: true
+  ELASTIC_USEAUTHENTICATION: true
+  ELASTIC_USERNAME: elastic
+  ELASTIC_SECRET:
+    name: workflow-es-elastic-user
+    key: elastic
+  ELASTIC_WORKFLOWINDEX: workflow
+  ELASTIC_TASKINDEX: task
+
+  # -----------------
+  # SPRING_PROFILES_ACTIVE: secure
+  # AUTH_JWTPUBLICKEYURL: "https://_EGO_URL_/api/oauth/token/public_key"
+  # -----------------
+
+env:
+  SERVICEINFO_WORKFLOWENGINEVERSIONS_NEXTFLOW: "20.07.1"
+
+  # -----------------
+  # AUTH_GRAPHQLSCOPES_QUERYONLY_0: "RDPC-_LOCATION_.READ"
+  # AUTH_GRAPHQLSCOPES_QUERYANDMUTATION_0:  "RDPC-_LOCATION_.WRITE"
+  # -----------------
